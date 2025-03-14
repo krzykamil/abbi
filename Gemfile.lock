@@ -1,0 +1,16 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    amqp-client (1.1.7)
+    dotenv (3.1.7)
+
+PLATFORMS
+  ruby
+  x86_64-linux
+
+DEPENDENCIES
+  amqp-client
+  dotenv
+
+BUNDLED WITH
+   2.3.10

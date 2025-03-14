@@ -1,0 +1,27 @@
+.env
+# The directory Mix will write compiled artifacts to.
+/basics_elixir_01/_build/
+
+# If you run "mix test --cover", coverage assets end up here.
+/basics_elixir_01/cover/
+
+# The directory Mix downloads your dependencies sources to.
+/basics_elixir_01/deps/
+
+# Where third-party dependencies like ExDoc output generated docs.
+/basics_elixir_01/doc/
+
+# Ignore .fetch files in case you like to edit your project deps locally.
+/basics_elixir_01/.fetch
+
+# If the VM crashes, it generates a dump, let's ignore it too.
+/basics_elixir_01erl_crash.dump
+
+# Also ignore archive artifacts (built via "mix archive.build").
+/basics_elixir_01*.ez
+
+# Ignore package tarball (built via "mix hex.build").
+/basics_elixir_01basics_elixir_01-*.tar
+
+# Temporary files, for example, from tests.
+/basics_elixir_01/tmp/
