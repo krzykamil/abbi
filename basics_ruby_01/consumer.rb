@@ -4,7 +4,8 @@ require 'amqp-client'
 require 'dotenv/load'
 
 # Opens and establishes a connection, channel is created automatically
-client = AMQP::Client.new(ENV['CLOUDAMQP_URL']).start
+# client = AMQP::Client.new(ENV['CLOUDAMQP_URL']).start
+client = AMQP::Client.new("amqp://guest:guest@localhost").start
 
 # Declare two queues, note that creating the queue happened in publisher, through a method called queue_declare. Naming might be a bit misleading
 queue_email_meessages = client.queue 'email.notifications'

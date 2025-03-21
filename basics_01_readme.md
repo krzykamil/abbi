@@ -14,6 +14,8 @@ A free RabbitMQ instance can be set up for testing over at CloudAMQP. Refer to [
 
 Once you have an instance get an env variable CLOUDAMQP_URL and run the scripts with it loaded. You can find your CloudAMQP URL under Details in the CloudAMQP Console.
 
+Running it locally is covered in next basics example.
+
 ### The idea
 
 ...is to show but also encourage to experiment. Try to break the code. Add more to it. Add more logs. Add your own comments.

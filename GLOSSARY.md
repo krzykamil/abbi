@@ -86,6 +86,15 @@ A user of a messaging system in the form of software that sends and receives mes
 Clients send messages through the channel’s "basic_publish" method.
 </details>
 
+### Cluster
+
+A group of brokers that work together to provide a single messaging service.
+
+<details>
+<summary> Detailed Explanation</summary>
+A RabbitMQ cluster is a group of one or several RabbitMQ servers, where each RabbitMQ server is sharing users, virtual hosts, queues, exchanges, bindings, runtime parameters, and other distributed states. When setting up a cluster, you set up another RabbitMQ node and join that node into the default node.
+</details>
+
 ### Connection
 
 A link between a client and a broker.
@@ -123,6 +132,20 @@ It has four types:
   - Headers exchanges are very similar to topic exchanges but route messages based on the header values instead of routing keys. A special argument named "x-match" added in the binding between exchange and queue, specifies if headers must match "all" or "any".
 </details>
 
+## L
+
+### Lazy Queue
+**Highly version dependent concept. Seems to have been introduced in 3.6, but removed in 4.0 version of rabbitmq**
+
+A policy that tells the queue to store messages to disk instead of RAM
+
+<details>
+<summary> Detailed Explanation</summary>
+Queues can become long for various reasons including consumer maintenance or the arrival of large batches of messages. While RabbitMQ can support millions of messages, keeping queues as short as possible is recommended by most experts. Messages are stored in memory by default. RabbitMQ then flushes messages (page out) to free up the RAM usage when the queue becomes too long for the underlying instance to handle. Storing messages in RAM enables faster delivery of messages to consumers than storing them to disk.
+
+The page out function usually takes time and often stops the queue from processing messages, which deteriorates the queue speed. For this reason, queues that contain a lot of messages can have a negative impact on the broker's performance. Additionally, it takes a lot of time to rebuild the index after a cluster is restarted and to sync messages between Nodes.
+</details>
+
 ## M
 
 ### Message
@@ -141,6 +164,37 @@ A queue is a list of messages that are waiting to be processed. Same as queue, b
 ### Microservice
 
 A microservice is a small piece of software that is responsible for a specific task. It is often a single service that is self-contained and can be deployed independently of other services.
+
+## Q
+
+### Queue
+A queue is a list of messages that are waiting to be processed.
+
+<details>
+<summary> Detailed Explanation</summary>
+It's a first-in-first-out (FIFO) data structure.
+
+Messages are not published directly to a queue.
+
+The **queue** is the place where **messages** are stored until they are consumed by the **consumer**, or in other ways removed from the **queue**. **Queues** have properties that define how they behave, and these properties are passed to the broker when the queue is declared.
+
+- A queue has some required properties and some optional.
+- A queue always has a name, so that services can reference them.
+  - A queue declared with no name, is given a random name by most client libraries.
+- A queue can be marked as durable, which specifies if the queue should survive a broker restart.
+- A queue can be exclusive, which specifies if the queue can be used by only one connection. An exclusive queue is deleted when that connection closes.
+- A queue can also be declared with the auto-delete property, meaning that a queue that has had at least one consumer is deleted when the last consumer unsubscribes.
+- There are also some optional properties used by plugins and broker-specific features, like TTL, which is telling an unused queue when to expire after a period of time.
+
+Before a queue can be used it has to be declared. Declaring a queue will cause it to be created if it does not already exist.
+
+#### Life-cycle for a temporary message queue.
+
+1. The client creates the message queue (Declare). The server confirms (Declare-Ok).
+2. The client starts a consumer on the message queue.
+3. The client cancels the consumer, either explicitly or by closing the channel and/or connection.
+4. When the last consumer disappears from the message queue, the server deletes the message queue.
+</details>
 
 ## R
 
@@ -161,37 +215,26 @@ The routing key is a string that is used to determine which queue a message shou
 The routing key on the binding is sometimes called a binding key, and the routing key in the message are the things the exchange is looking at while delivering messages.
 </details>
 
-## Q
+## S
 
-### Queue
-A queue is a list of messages that are waiting to be processed. 
+### Stream
+
+Functionality consisting of stream queues and protocols. A stream queue is persistent and replicated, differs from regular queue because it does not remove messages after they have been consumed, allowing for repeated consumption. 
 
 <details>
 <summary> Detailed Explanation</summary>
-It's a first-in-first-out (FIFO) data structure.
+Stream queues can be used with traditional AMQP clients, i.e. they don’t have to use the stream protocol.
+Similar to functionalities that can be found in Apache Kafka.
+RabbitMQ Streams also comes with its very own stream protocol, which has shown to be much faster than AMQP in RabbitMQ.
 
-Messages are not published directly to a queue.
+#### Benefits of Using RabbitMQ Streams
+- Large number of consumers can easily consume the same message.
+- Messages can be consumed multiple times.
+- Messages will stay in queues until they are expired with retention policies.
+- High throughput when using the stream protocol.
+- Streams can easily store millions of messages without issues (which is not always the case with traditional queue-type messages in RabbitMQ). Alternative to Apache Kafka.
 
-The **queue** is the place where **messages** are stored until they are consumed by the **consumer**, or in other ways removed from the **queue**. **Queues** have properties that define how they behave, and these properties are passed to the broker when the queue is declared.
-
-- A queue has some required properties and some optional.
-- A queue always has a name, so that services can reference them.
-    - A queue declared with no name, is given a random name by most client libraries.
-- A queue can be marked as durable, which specifies if the queue should survive a broker restart.
-- A queue can be exclusive, which specifies if the queue can be used by only one connection. An exclusive queue is deleted when that connection closes.
-- A queue can also be declared with the auto-delete property, meaning that a queue that has had at least one consumer is deleted when the last consumer unsubscribes.
-- There are also some optional properties used by plugins and broker-specific features, like TTL, which is telling an unused queue when to expire after a period of time.
-
-Before a queue can be used it has to be declared. Declaring a queue will cause it to be created if it does not already exist.
-
-#### Life-cycle for a temporary message queue.
-
-1. The client creates the message queue (Declare). The server confirms (Declare-Ok).
-2. The client starts a consumer on the message queue.
-3. The client cancels the consumer, either explicitly or by closing the channel and/or connection.
-4. When the last consumer disappears from the message queue, the server deletes the message queue.
 </details>
-
 
 ## V
 

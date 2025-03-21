@@ -5,7 +5,8 @@ require 'dotenv/load'
 require 'json'
 
 # Opens and establishes a connection
-connection = AMQP::Client.new(ENV['CLOUDAMQP_URL']).connect
+# connection = AMQP::Client.new(ENV['CLOUDAMQP_URL']).connect
+connection = AMQP::Client.new("amqp://guest:guest@localhost").connect
 
 # Open a channel
 channel = connection.channel
