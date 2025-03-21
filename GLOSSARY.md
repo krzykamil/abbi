@@ -43,6 +43,16 @@ A **message** can be considered successfully delivered either immediately once i
 The manually sent **acknowledgment** can be positive or negative.
 
 Once an acknowledgment is received, the message can be discarded from the queue. If the consumer cannot process a message, the desired outcome could be to requeue it and let another consumer receive and handle it, or to retry processing at a later time. Such deliveries can be discarded by the broker or requeued.
+
+If for some reason, the consumer cannot process a message, the use of consumer acknowledgement can prevent a message loss by letting another available consumer receive and handle it, or retrying the process at a later time.
+
+#### Manual and Automatic
+
+Manual Acks are the default setting for consumer acknowledgements in RabbitMQ.
+
+Automatic Acknowledgement - Acks are received once the message is sent out and written to a TCP socket. RabbitMQ considers the message to be successfully sent once it has left the broker.
+
+Notice that Automatic Acknowledgement should be considered unsafe, as an unexpected message loss in case of connection failure to the consumer might result in a message being dropped after leaving RabbitMQ. Because of this, this setup is not suitable for all workloads.
 </details>
 
 ## B
@@ -132,6 +142,23 @@ It has four types:
   - Headers exchanges are very similar to topic exchanges but route messages based on the header values instead of routing keys. A special argument named "x-match" added in the binding between exchange and queue, specifies if headers must match "all" or "any".
 </details>
 
+## F
+
+### Fan-out architecture
+
+Multiple consumers read the same message. Implementing this sort of architecture with queues isn’t optimal. 
+
+<details>
+<summary> Detailed Explanation</summary>
+Having to add queues for every added consumer is resource intensive, which gets worse when dealing with queues that need to persist data.
+
+For fan-out architecture, stream based approach is recommended. Because consumers read messages from a Stream in a non-destructive manner, a message will always be there for the next consumer to access it. In essence, to implement a fan-out architecture, just declare a RabbitMQ Stream and bind as many consumers as needed.
+
+Comparison of fan-out using streams and queues:
+![fan out with streams](fan-out-stream.jpg)
+![fan out with queues](fan-out-queues.jpg)
+</details>
+
 ## L
 
 ### Lazy Queue
@@ -164,6 +191,47 @@ A queue is a list of messages that are waiting to be processed. Same as queue, b
 ### Microservice
 
 A microservice is a small piece of software that is responsible for a specific task. It is often a single service that is self-contained and can be deployed independently of other services.
+
+## P
+
+### Properties
+
+Properties can be defined for Queues, Exchanges, and Messages in RabbitMQ. Some are mandatory, some optional. They are used to define behaviour.
+
+<details>
+<summary> Detailed Explanation</summary>
+Defined by AMQP protocol, implemented by RabbitMQ for us.  An example of a property for a queue is “passive”, “durable” and “exclusive”.
+
+A property can be set while creating the queue, code-wise, via the management interface, or via policies.
+
+```ruby
+channel.queue_declare(queue: 'test', durable: true)
+```
+</details>
+
+### Poison message
+
+Message that is not consumed completely or positively acknowledged, or whatever reason, your consumer cannot process that message.
+
+<details>
+<summary> Detailed Explanation</summary>
+Those messages will/can cause a consumer to repeatedly requeue a delivery. quorum queue is one possible way to handle those
+</details>
+
+### Policies
+
+Policies make it possible to configure arguments for one or many queues at once, and the queues will all be updated when you’re updating the policy definition.
+
+<details>
+<summary> Detailed Explanation</summary>
+The use of policies allows reduce the overhead work of configuring every single queue and exchange with arguments.
+
+Policies are created per vhost, with a pattern that defines where it will be applied and a parameter that defines what the policy will do.
+
+Policies can be changed at any time, and changes will affect all matching queues and exchanges.
+
+A policy is applied when the pattern, a regular expression, matches a queue or exchange.
+</details>
 
 ## Q
 
@@ -234,6 +302,20 @@ RabbitMQ Streams also comes with its very own stream protocol, which has shown t
 - High throughput when using the stream protocol.
 - Streams can easily store millions of messages without issues (which is not always the case with traditional queue-type messages in RabbitMQ). Alternative to Apache Kafka.
 
+**Tips:**
+- Dramatic change from queues
+- Used to complement queues, not replace them
+
+
+**When to use:**
+You see one of those problems with your queues:
+- They deliver the same message to multiple consumers by binding a dedicated queue for each consumer. This can lead to scalability problems
+- Erasing read messages and making it impossible to re-read(replay) them or grab a specific message in the queue is a problem.
+- You are handling millions of messages (queues are optimized to gravitate toward an empty state).
+- Fan-out architectures: Where many consumers need to read the same message
+- Replay & time-travel: Where consumers need to read and reread a message from any point in the stream.
+- Large Volumes of Messages: Streams are great for use cases where large volumes of messages need to be persisted.
+- High Throughput: RabbitMQ Streams process relatively higher volumes of messages per second.
 </details>
 
 ## V
