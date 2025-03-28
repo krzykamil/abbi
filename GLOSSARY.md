@@ -55,6 +55,8 @@ Automatic Acknowledgement - Acks are received once the message is sent out and w
 Notice that Automatic Acknowledgement should be considered unsafe, as an unexpected message loss in case of connection failure to the consumer might result in a message being dropped after leaving RabbitMQ. Because of this, this setup is not suitable for all workloads.
 </details>
 
+### Alternate Exchange
+
 ## B
 
 ### Broker
@@ -117,6 +119,11 @@ A connection can multiplex into several “light-weight connections”. This "li
 
 A connection is created by opening a physical TCP connection to the target server.
 </details>
+
+## D
+
+### Dead Lettering
+[//]: # (TODO)
 
 ## E
 
@@ -194,6 +201,10 @@ A microservice is a small piece of software that is responsible for a specific t
 
 ## P
 
+## Prefetch
+
+[//]: # (TODO)
+
 ### Properties
 
 Properties can be defined for Queues, Exchanges, and Messages in RabbitMQ. Some are mandatory, some optional. They are used to define behaviour.
@@ -234,6 +245,19 @@ A policy is applied when the pattern, a regular expression, matches a queue or e
 </details>
 
 ## Q
+
+### QoS Prefetch
+
+The QoS (Quality of Service) prefetch option specifies the number of unacknowledged messages that the broker will send to a consumer at a time.
+
+In other words: a setting that specifies the maximum number of “in-progress” messages that a specific consumer could accommodate at a time.
+
+<details>
+<summary> Detailed Explanation</summary>
+Let’s take the case of a consumer whose QoS prefetch is set to 3. Imagine this consumer currently having 3 “in-progress” messages(the currently executing message not included): **message-1** , **message-2** , and **message-3** .
+
+Because this consumer’s QoS prefetch is set to 3 and it already has 3 “in-progress” messages, RabbitMQ will not push a fourth message, message-4 , until one of the “in-progress” messages has been resolved. RabbitMQ implements this check to ensure that consumers are not overwhelmed with messages.
+</details>
 
 ### Queue
 A queue is a list of messages that are waiting to be processed.

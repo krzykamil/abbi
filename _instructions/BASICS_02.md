@@ -14,7 +14,7 @@ After installing local RabbitMQ and the plugin responsible for UI (rabbitmq_mana
 $ rabbitmq-server
 ```
 
-_address_: http://127.0.0.1:15672/
+_address_: http://127.0.0.1:15672/ (default, login is `guest` and password is `guest`)
 
 And then change the code from the first example to use the local RabbitMQ instance.
 

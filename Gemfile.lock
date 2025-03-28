@@ -1,8 +1,17 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    amq-protocol (2.3.3)
     amqp-client (1.1.7)
+    bunny (2.24.0)
+      amq-protocol (~> 2.3)
+      sorted_set (~> 1, >= 1.0.2)
     dotenv (3.1.7)
+    rbtree (0.4.6)
+    set (1.1.1)
+    sorted_set (1.0.3)
+      rbtree
+      set (~> 1.0)
 
 PLATFORMS
   ruby
@@ -10,6 +19,7 @@ PLATFORMS
 
 DEPENDENCIES
   amqp-client
+  bunny
   dotenv
 
 BUNDLED WITH
