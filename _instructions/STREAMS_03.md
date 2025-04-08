@@ -12,3 +12,6 @@ A non drop/gem/library approach is also possible, but outside of scope for this.
 
 ### The idea
 Is to show the difference between regular queue (shown in the first example) and streams.
+
+
+[//]: # (TODO: the elixir version)

@@ -56,6 +56,28 @@ Notice that Automatic Acknowledgement should be considered unsafe, as an unexpec
 </details>
 
 ### Alternate Exchange
+A backup for unroutable messages
+
+<details>
+<summary> Detailed Explanation</summary>
+Unroutable messages are an issue. They slow down processing times if applications make multiple attempts at delivery or are kept busy by continually logging them. Additionally, there is the problem of what to do with unrouted messages, which must eventually be handled or dropped.
+Whether messages return or not, unroutable messages can:
+- Be returned to a broken application that constantly resends them
+- Be the result of malicious activity aimed at causing RabbitMQ to become unresponsive
+- Cause the loss of mission-critical data
+
+unroutable messages can be a result of:
+- A bug in the application
+- non-existent routing keys
+- malformed messages
+- etc.
+
+#### What Happens to Unroutable Messages in RabbitMQ?
+
+It is possible to avoid the complete loss of a message. RabbitMQ handles unroutable messages in two ways based on the mandatory flag within the message header. The server either returns the message when the flag is set to true or silently drops the message when set to false.
+
+Applications can log returned messages, but logging does not provide a mechanism for dealing with an unreachable exchange or queue.
+</details>
 
 ## B
 
@@ -123,7 +145,30 @@ A connection is created by opening a physical TCP connection to the target serve
 ## D
 
 ### Dead Lettering
-[//]: # (TODO)
+
+Allows orphaned messages to be stored and processed
+
+<details>
+<summary> Detailed Explanation</summary>
+Some messages become undeliverable or unhandled even when received by the broker. This can happen when the amount of time the message has spent in a queue exceeds the time to live, TTL, when the queue reaches its capacity, or when a message is negatively acknowledged by the consumer. Such a message is called a dead message.
+
+Dead letter handling is a key part of almost any messaging system.
+
+#### When is a message dead?
+- A message is negatively acknowledged by the consumer
+- The TTL of a message expires
+- The queue reaches capacity
+
+By default, the broker drops these messages. Publishing is successful, however, the RabbitMQ consumer never handles or has a chance to handle the message successfully.
+
+_Please note that messages that are dropped by the exchange or messages that are not routed need to be handled by the alternate exchange._
+
+#### When use it?
+- When you know that you have messages that might be nacked, but still need to be handled.
+- When you can’t lose messages with an expiring TTL
+- When the queue might reach TTL capacity
+
+</details>
 
 ## E
 
@@ -203,7 +248,16 @@ A microservice is a small piece of software that is responsible for a specific t
 
 ## Prefetch
 
-[//]: # (TODO)
+The prefetch count is the number of messages that will be sent to a consumer at a time. How many messages are being sent at the same time.
+
+<details>
+<summary> Detailed Explanation</summary>
+Messages in RabbitMQ are pushed from the broker to the consumers. The RabbitMQ default prefetch setting gives clients an unlimited buffer, meaning that RabbitMQ, by default, sends as many messages as it can to any consumer that appears ready to accept them. It is, therefore, possible to have more than one message "in-flight" on a channel at any given moment.
+
+Messages are cached by the RabbitMQ client library (in the consumer) until processed. All pre-fetched messages are invisible to other consumers and are listed as unacked messages in the RabbitMQ management interface.
+
+Prefetching in RabbitMQ simply allows you to set a limit of the number of unacked (not handled) messages.
+</details>
 
 ### Properties
 

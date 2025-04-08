@@ -8,3 +8,5 @@ We will discuss 3 main points that are usually used to optimize or fine tune a R
 - alternate exchanges
 
 All of them also discussed in **GLOSSARY.md**
+
+We are utilizing Bunny library more in ruby.
